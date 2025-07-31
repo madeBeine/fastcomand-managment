@@ -53,7 +53,7 @@ export default function ProjectWithdrawals() {
 
   // Calculate totals
   const totalWithdrawn = projectWithdrawals?.reduce((sum, withdrawal) => sum + withdrawal.amount, 0) || 0;
-  const projectBalance = dashboardStats?.projectBalance || 0;
+  const projectBalance = dashboardStats?.data?.projectBalance || dashboardStats?.projectBalance || 0;
   const availableForWithdrawal = projectBalance - totalWithdrawn;
 
   const handleInputChange = (field: keyof ProjectWithdrawalFormData) => (

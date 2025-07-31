@@ -45,7 +45,9 @@ export const handleGetDashboard: RequestHandler = async (req, res) => {
     };
 
     if (user.role === 'Investor') {
-      const userInvestor = investors.find(inv => inv.name === user.name);
+      const userInvestor = investors.find(inv => 
+        inv.name.toLowerCase().trim() === user.name.toLowerCase().trim()
+      );
       filteredData = {
         stats: {
           ...stats,
@@ -54,7 +56,9 @@ export const handleGetDashboard: RequestHandler = async (req, res) => {
         investors: userInvestor ? [userInvestor] : [],
         expenses,
         revenues,
-        withdrawals: withdrawals.filter(w => w.investorName === user.name),
+        withdrawals: withdrawals.filter(w => 
+          w.investorName.toLowerCase().trim() === user.name.toLowerCase().trim()
+        ),
         recentActivities: [],
       };
     }

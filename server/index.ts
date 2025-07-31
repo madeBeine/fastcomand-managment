@@ -136,13 +136,12 @@ export function createServer() {
   app.get("/api/dashboard", authenticateRequest, handleGetDashboard);
   app.get("/api/dashboard/stats", authenticateRequest, async (req, res) => {
     try {
-      const { default: DatabaseService } = await import('./services/databaseService');
-      const dbService = new DatabaseService();
+      const { databaseService } = await import('./services/databaseService');
 
       // Load current settings
       const currentSettings = loadSettings();
 
-      const stats = await dbService.getDashboardStats(currentSettings);
+      const stats = await databaseService.getDashboardStats(currentSettings);
 
       res.json({
         success: true,
@@ -181,11 +180,10 @@ export function createServer() {
       }
 
       console.log('🔍 Fetching operations log...');
-      const { default: DatabaseService } = await import('./services/databaseService');
-      const dbService = new DatabaseService();
+      const { databaseService } = await import('./services/databaseService');
 
       try {
-        const operationsLog = await dbService.getOperationsLog();
+        const operationsLog = await databaseService.getOperationsLog();
         console.log('📊 Operations log fetched:', operationsLog?.length, 'entries');
 
         // If no data, return empty array but successful
@@ -261,14 +259,17 @@ export function createServer() {
         });
       }
 
-      const { default: DatabaseService } = await import('./services/databaseService');
-      const dbService = new DatabaseService();
+      const { databaseService } = await import('./services/databaseService');
 
       // Get investor data with effective profits
       const { loadSettings } = await import('./routes/settings');
       const currentSettings = loadSettings();
-      const investors = await dbService.getInvestorsWithEffectiveProfits(currentSettings);
-      const investorData = investors.find(inv => inv.name === user.name);
+      const investors = await databaseService.getInvestorsWithEffectiveProfits(currentSettings);
+      
+      // البحث عن المستثمر بالاسم (مع مراعاة الحالة)
+      const investorData = investors.find(inv => 
+        inv.name.toLowerCase().trim() === user.name.toLowerCase().trim()
+      );
 
       if (!investorData) {
         return res.status(404).json({
@@ -278,8 +279,10 @@ export function createServer() {
       }
 
       // Get investor's withdrawals
-      const withdrawals = await dbService.getWithdrawals();
-      const investorWithdrawals = withdrawals.filter(w => w.investorName === user.name);
+      const withdrawals = await databaseService.getWithdrawals();
+      const investorWithdrawals = withdrawals.filter(w => 
+        w.investorName.toLowerCase().trim() === user.name.toLowerCase().trim()
+      );
 
       res.json({
         success: true,
@@ -314,9 +317,8 @@ export function createServer() {
         });
       }
 
-      const { default: DatabaseService } = await import('./services/databaseService');
-      const dbService = new DatabaseService();
-      const users = await dbService.getUsers();
+      const { databaseService } = await import('./services/databaseService');
+      const users = await databaseService.getUsers();
 
       res.json({
         success: true,
@@ -343,10 +345,9 @@ export function createServer() {
       const user = (req as any).user;
       console.log('🧪 Test operation log - User:', user);
 
-      const { default: DatabaseService } = await import('./services/databaseService');
-      const dbService = new DatabaseService();
+      const { databaseService } = await import('./services/databaseService');
 
-      await dbService.addOperationLog({
+      await databaseService.addOperationLog({
         id: 'TEST' + Date.now(),
         operationType: 'اختبار النظام',
         details: `تم إجراء اختبار سجل العمليات من قبل ${user.name} في ${new Date().toLocaleString('ar-SA')}`,
@@ -372,10 +373,9 @@ export function createServer() {
   // Database information and testing
   app.get("/api/database/info", authenticateRequest, async (req, res) => {
     try {
-      const { default: DatabaseService } = await import('./services/databaseService');
-      const dbService = new DatabaseService();
-      const info = dbService.getDatabaseInfo();
-      const connectionTest = await dbService.testConnection();
+      const { databaseService } = await import('./services/databaseService');
+      const info = databaseService.getDatabaseInfo();
+      const connectionTest = await databaseService.testConnection();
 
       res.json({
         success: true,
@@ -404,9 +404,8 @@ export function createServer() {
         });
       }
 
-      const { default: DatabaseService } = await import('./services/databaseService');
-      const dbService = new DatabaseService();
-      const result = await dbService.migrateToSupabase();
+      const { databaseService } = await import('./services/databaseService');
+      const result = await databaseService.migrateToSupabase();
 
       res.json(result);
     } catch (error) {
@@ -429,9 +428,8 @@ export function createServer() {
         });
       }
 
-      const { default: DatabaseService } = await import('./services/databaseService');
-      const dbService = new DatabaseService();
-      const result = await dbService.forceSupabaseMode();
+      const { databaseService } = await import('./services/databaseService');
+      const result = await databaseService.forceSupabaseMode();
 
       res.json(result);
     } catch (error) {
@@ -454,9 +452,8 @@ export function createServer() {
         });
       }
 
-      const { default: DatabaseService } = await import('./services/databaseService');
-      const dbService = new DatabaseService();
-      const result = await dbService.initializeDatabase();
+      const { databaseService } = await import('./services/databaseService');
+      const result = await databaseService.initializeDatabase();
 
       if (result) {
         res.json({

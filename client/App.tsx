@@ -74,7 +74,7 @@ const PlaceholderPage = ({ title }: { title: string }) => (
     <h1 className="text-2xl font-bold text-gray-900 mb-4">{title}</h1>
     <p className="text-gray-600 mb-6">هذه الصفحة قيد التطوير</p>
     <p className="text-sm text-gray-500">
-      يرجى العودال لاحقاً أو طلب تطوير هذه الصفحة
+      يرجى العودة لاحقاً أو طلب تطوير هذه الصفحة
     </p>
   </div>
 );

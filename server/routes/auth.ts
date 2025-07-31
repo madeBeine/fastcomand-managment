@@ -183,7 +183,7 @@ const getUserPermissions = (role: string) => {
         canViewSettings: false,
         canEditSettings: false,
         canViewAIInsights: true,
-        canViewAllData: false,
+        canViewAllData: true, // إضافة صلاحية عرض جميع البيانات للمساعد
         canExportData: false,
       };
 
