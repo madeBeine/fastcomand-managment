@@ -265,3 +265,4 @@ Error: Cannot GET /
 **آخر تحديث**: 31 يوليو 2025
 **الإصدار**: 1.0.0
 
+"# fastcomand-managment" 
